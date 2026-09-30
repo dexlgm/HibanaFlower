@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hibana Flower — Minecraft Server</title>
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Надежное подключение пиксельного шрифта VT323 и JetBrains Mono через Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=VT323&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+
+    <!-- Подключаем растровый Fixedsys Excelsior напрямую из надежного источника -->
+    <style>
+        @font-face {
+            font-family: 'Fixedsys Excelsior';
+            src: url('https://cdn.jsdelivr.net/gh/kagarton/fixedsys-excelsior@master/FSEX300.ttf') format('truetype');
+            font-weight: normal;
+            font-style: normal;
+        }
+
+        :root {
+            --bg-color: #FA4175;
+            --accent-color: #FFC9D8;
+            --card-bg: rgba(20, 5, 12, 0.85);
+            --card-border: #FFC9D8;
+        }
+
+        /* Применяем Fixedsys ко всем элементам сайта */
+        * {
+            font-family: 'Fixedsys Excelsior', 'VT323', monospace !important;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: #ffffff;
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .pixel-font {
+            font-family: 'Fixedsys Excelsior', 'VT323', monospace !important;
+            letter-spacing: 1px;
+        }
+
+        .tab-button {
+            background-color: transparent;
+            color: #ffffff;
+            border: 2px solid transparent;
+            padding: 10px 24px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            border-radius: 8px;
+            transition: all 0.15s ease;
+        }
+
+        .tab-button:hover {
+            background-color: rgba(255, 201, 216, 0.2);
+            color: var(--accent-color);
+        }
+
+        .tab-button.active {
+            background-color: var(--accent-color);
+            color: #2b0310;
+            border-color: #ffffff;
+        }
+
+        .content-card {
+            background-color: var(--card-bg);
+            border: 2px solid var(--card-border);
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+        }
+
+        .btn-action {
+            background-color: var(--accent-color);
+            color: #2b0310;
+            font-weight: bold;
+            border: 2px solid #ffffff;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.15s ease;
+        }
+
+        .btn-action:hover {
+            background-color: #ffffff;
+        }
+
+        .penalty-tag {
+            color: var(--accent-color);
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body class="flex flex-col justify-between">
+
+    <header class="w-full bg-black/40 border-b-2 border-pink-200/40 py-4 px-4">
+        <div class="max-w-4xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
+            <!-- Server Title -->
+            <div class="pixel-font text-3xl font-bold tracking-wider text-white">
+                🌸 HIBANA <span style="color: var(--accent-color);">FLOWER</span>
+            </div>
+
+            <!-- Two Header Tabs -->
+            <nav class="flex items-center gap-2 bg-black/50 p-1.5 rounded-xl border border-pink-200/30">
+                <button id="tab-home-btn" onclick="openTab('home')" class="tab-button active">
+                    Главная
+                </button>
+                <button id="tab-rules-btn" onclick="openTab('rules')" class="tab-button">
+                    Правила сервера
+                </button>
+            </nav>
+        </div>
+    </header>
+
+    <main class="max-w-4xl mx-auto w-full px-4 py-8 flex-grow">
+
+        <!-- ================= TAB 1: HOME ================= -->
+        <section id="tab-home" class="space-y-6">
+            <div class="content-card text-center space-y-6">
+                <h1 class="pixel-font text-4xl sm:text-5xl font-bold" style="color: var(--accent-color);">
+                    Добро пожаловать!
+                </h1>
+                
+                <p class="text-base sm:text-lg text-pink-100 max-w-xl mx-auto leading-relaxed">
+                    Простой и ламповый Minecraft сервер <strong>Hibana Flower</strong>. Присоединяйтесь к игре вместе с друзьями!
+                </p>
+
+                <!-- Server Info Box -->
+                <div class="bg-black/60 border border-pink-200/40 rounded-xl p-6 max-w-md mx-auto space-y-4">
+                    <div>
+                        <div class="text-xs uppercase tracking-widest text-pink-200 font-bold mb-1">IP Адрес Сервера:</div>
+                        <div id="server-ip" class="pixel-font text-2xl sm:text-3xl font-bold tracking-wider" style="color: var(--accent-color);">
+                            HibanaFlower.Aternos.Me
+                        </div>
+                    </div>
+
+                    <button onclick="copyIp()" class="btn-action w-full text-base uppercase">
+                        📋 Скопировать IP
+                    </button>
+                </div>
+
+                <!-- Version & Info Badges -->
+                <div class="flex flex-wrap justify-center gap-4 text-sm font-semibold pt-2">
+                    <div class="bg-black/50 border border-pink-200/30 px-4 py-2 rounded-lg text-pink-100">
+                        Версия: <span style="color: var(--accent-color);">1.16.5</span>
+                    </div>
+                    <div class="bg-black/50 border border-pink-200/30 px-4 py-2 rounded-lg text-pink-100">
+                        Режим: <span style="color: var(--accent-color);">Выживание</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ================= TAB 2: RULES ================= -->
+        <section id="tab-rules" class="hidden space-y-6">
+            <div class="content-card space-y-8">
+                <div class="border-b border-pink-200/30 pb-4">
+                    <h2 class="pixel-font text-3xl font-bold" style="color: var(--accent-color);">
+                        📜 Правила сервера
+                    </h2>
+                    <p class="text-xs text-pink-200/80 mt-1">Ознакомьтесь с правилами проекта для комфортной игры.</p>
+                </div>
+
+                <!-- SECTION 1 -->
+                <div class="space-y-3">
+                    <h3 class="pixel-font text-2xl font-bold text-white border-b border-pink-200/20 pb-1">
+                        Пункт 1. — Пользовательские соглашения
+                    </h3>
+                    <div class="space-y-2 text-sm leading-relaxed pl-2">
+                        <p><strong>1.0.</strong> Зайдя на сервер вы уже соглашены с правилами, незнание правил не освобождает от ответственности.</p>
+                        <p><strong>1.1.</strong> Все вне-игровые ценности внесённые в проект, не будут возвращены в любом исходе.</p>
+                    </div>
+                </div>
+
+                <!-- SECTION 2 -->
+                <div class="space-y-3">
+                    <h3 class="pixel-font text-2xl font-bold text-white border-b border-pink-200/20 pb-1">
+                        Пункт 2. — Вежливость
+                    </h3>
+                    <div class="space-y-3 text-sm leading-relaxed pl-2">
+                        <div>
+                            <p><strong>2.0.</strong> Запрещено писать больше 3х подряд слов в верхнем регистре CapsLock.</p>
+                            <div class="penalty-tag pl-4">• Наказание: мут от 15 до 30 минут.</div>
+                        </div>
+
+                        <div>
+                            <p><strong>2.1.</strong> Запрещен флуд (Неразборчивые сообщения).</p>
+                            <div class="penalty-tag pl-4">• Наказание: мут от 15 до 30 минут.</div>
+                        </div>
+
+                        <div>
+                            <p><strong>2.2.</strong> Запрещен спам, 3 и более сообщений с одним смыслом в минуту / если вместятся в один скриншот.</p>
+                            <div class="penalty-tag pl-4">• Наказание: мут от 15 до 30 минут.</div>
+                        </div>
+
+                        <div>
+                            <p><strong>2.3.</strong> Запрещены любые оскорбления ( Исключения : Ezz, L, Позер, Нуб, 0 ).</p>
+                            <div class="penalty-tag pl-4">• Наказание: мут от 30 минут до 1 часа.</div>
+                            <div class="pl-6 space-y-1 text-xs text-pink-100/90 mt-1">
+                                <p>· <strong>2.3.0</strong> — Запрещены оскорбления кровной родни <span class="penalty-tag">- Наказание: мут от 1 до 2 часов.</span></p>
+                                <p>· <strong>2.3.1</strong> — Запрещены оскорбления администрации проекта. <span class="penalty-tag">- Наказание: мут от 1 до 2 часов</span></p>
+                            </div>
+                        </div>
+
+                        <div>
+                            <p><strong>2.4.</strong> Запрещена неоправданная критика в сторону сервера.</p>
+                            <div class="penalty-tag pl-4">• Наказание: бан от 1 до 2 дней.</div>
+                        </div>
+
+                        <div>
+                            <p><strong>2.5.</strong> Запрещена пропаганда : Наркотизма, табакокурения, алкоголизма, нацизма, фашизма и тому подобного.</p>
+                            <div class="penalty-tag pl-4">• Наказание: мут от 1ч. 30мин. До 2 часов.</div>
+                        </div>
+
+                        <div>
+                            <p><strong>2.6.</strong> Запрещено использовать нецензурную лексику (Маты)</p>
+                            <div class="penalty-tag pl-4">• Наказание: мут от 15 до 30 минут.</div>
+                        </div>
+
+                        <div>
+                            <p><strong>2.7.</strong> Запрещено неадекватное поведение в чате, провокации к ссоре, неоправданная куча оскорблений с исключений.</p>
+                            <div class="penalty-tag pl-4">• Наказание: мут от 30 минут до 1 часа.</div>
+                        </div>
+
+                        <div>
+                            <p><strong>2.8.</strong> Запрещены угрозы на фоне привелегии / должности, хвастовство</p>
+                            <div class="penalty-tag pl-4">• Наказание: снятие привелегии, снятие с должности, бан 3 дня.</div>
+                        </div>
+
+                        <div>
+                            <p><strong>2.9.</strong> Запрещена намеренная попытка вывести игрока на нарушение правил, манипуляции.</p>
+                            <div class="penalty-tag pl-4">• Наказание: бан 5 дней.</div>
+                        </div>
+
+                        <div>
+                            <p><strong>2.10.</strong> Запрещена выдача себя за администрацию / ютуберов.</p>
+                            <div class="penalty-tag pl-4">• Наказание: бан от 4х дней, в зависимости от ситуации.</div>
+                        </div>
+
+                        <div>
+                            <p><strong>2.11.</strong> Запрещены упомянания тем 18+</p>
+                            <div class="penalty-tag pl-4">• Наказание: мут от 15 до 30 минут.</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SECTION 3 -->
+                <div class="space-y-3">
+                    <h3 class="pixel-font text-2xl font-bold text-white border-b border-pink-200/20 pb-1">
+                        Пункт 3. — Постройки, Скины, Реклама
+                    </h3>
+                    <div class="space-y-3 text-sm leading-relaxed pl-2">
+                        <div>
+                            <p><strong>3.0.</strong> Запрещена постройка половых органов, свастик и другого что перепадает под 18+, пропаганду, нацизм.</p>
+                            <div class="penalty-tag pl-4">• Наказание: бан от 1 до 2х дней.</div>
+                        </div>
+
+                        <div>
+                            <p><strong>3.1.</strong> Запрещено ставить скины с темами 18+, пропаганда, нацизм.</p>
+                            <div class="penalty-tag pl-4">• Наказание: сначала 3 Кика, потом при отказе в смене скина вас ждёт бан на 10 дней.</div>
+                        </div>
+
+                        <div>
+                            <p><strong>3.2.</strong> Запрещена реклама других проектов никак не связанных с HF.</p>
+                            <div class="penalty-tag pl-4">• Наказание: бан по айпи 20 дней.</div>
+                        </div>
+
+                        <div>
+                            <p><strong>3.3.</strong> Запрещен слив данных о любом человекe.</p>
+                            <div class="penalty-tag pl-4">• Наказание: внесение в ЧСП.</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SECTION 4 -->
+                <div class="space-y-3">
+                    <h3 class="pixel-font text-2xl font-bold text-white border-b border-pink-200/20 pb-1">
+                        Пункт 4. — Запрещённые ПО
+                    </h3>
+                    <div class="space-y-3 text-sm leading-relaxed pl-2">
+                        <div>
+                            <p><strong>4.0.</strong> Запрещено использовать запрещенные ПО софты, которые : автоматизируют процессы, воспомогают физически, делает что-то вместо вас.</p>
+                            <div class="penalty-tag pl-4">• Наказание: бан 45 дней.</div>
+                        </div>
+
+                        <div>
+                            <p><strong>4.1.</strong> Запрещен отказ от проверки на софты</p>
+                            <div class="penalty-tag pl-4">• Наказание: бан 55 дней.</div>
+                        </div>
+
+                        <div>
+                            <p><strong>4.1.1.</strong> Признание в использовании софтов, наказание уменьшается</p>
+                            <div class="penalty-tag pl-4">• Наказание: бан 35 дней.</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SECTION 5 -->
+                <div class="space-y-3">
+                    <h3 class="pixel-font text-2xl font-bold text-white border-b border-pink-200/20 pb-1">
+                        Пункт 5. — Правила для персонала
+                    </h3>
+                    <div class="space-y-3 text-sm leading-relaxed pl-2">
+                        <div>
+                            <p><strong>5.0.</strong> Запрещены ложные муты</p>
+                            <div class="penalty-tag pl-4">• Наказание: 1 Устный выговор, 2 Выговора.</div>
+                        </div>
+
+                        <div>
+                            <p><strong>5.1.</strong> Запрещено нарушение любых правил выше</p>
+                            <div class="penalty-tag pl-4">• Наказание: 2 Выговора.</div>
+                        </div>
+
+                        <div>
+                            <p><strong>5.2.</strong> Запрещено вызывать игрока на проверку без видимых обстоятельств.</p>
+                            <div class="penalty-tag pl-4">• Наказание: Выговор.</div>
+                        </div>
+
+                        <div>
+                            <p><strong>5.3.</strong> Запрещено использовать запрещенные ПО, софты.</p>
+                            <div class="penalty-tag pl-4">• Наказание: снятие, бан 65 дней.</div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="w-full text-center py-4 bg-black/40 border-t border-pink-200/20 text-xs text-pink-200">
+        Hibana Flower © Minecraft 1.16.5
+    </footer>
+
+    <!-- Notification Toast -->
+    <div id="toast" class="fixed bottom-4 right-4 bg-black/90 border-2 border-pink-200 text-white px-4 py-3 rounded-lg hidden font-mono text-sm">
+        ✓ IP скопирован в буфер обмена!
+    </div>
+
+    <script>
+        /* Tab Switching Logic */
+        function openTab(tabName) {
+            const homeTab = document.getElementById('tab-home');
+            const rulesTab = document.getElementById('tab-rules');
+            const homeBtn = document.getElementById('tab-home-btn');
+            const rulesBtn = document.getElementById('tab-rules-btn');
+
+            if (tabName === 'home') {
+                homeTab.classList.remove('hidden');
+                rulesTab.classList.add('hidden');
+                homeBtn.classList.add('active');
+                rulesBtn.classList.remove('active');
+            } else {
+                homeTab.classList.add('hidden');
+                rulesTab.classList.add('hidden'); // исправлена логика показа правил
+                rulesTab.classList.remove('hidden');
+                rulesBtn.classList.add('active');
+                homeBtn.classList.remove('active');
+            }
+        }
+
+        /* Copy IP logic */
+        function copyIp() {
+            const ipText = 'HibanaFlower.Aternos.Me';
+            
+            if (navigator.clipboard && window.isSecureContext) {
+                navigator.clipboard.writeText(ipText).then(showToast);
+            } else {
+                const textArea = document.createElement("textarea");
+                textArea.value = ipText;
+                textArea.style.position = "fixed";
+                textArea.style.left = "-9999px";
+                document.body.appendChild(textArea);
+                textArea.focus();
+                textArea.select();
+                try {
+                    document.execCommand('copy');
+                    showToast();
+                } catch (err) {}
+                document.body.removeChild(textArea);
+            }
+        }
+
+        function showToast() {
+            const toast = document.getElementById('toast');
+            toast.classList.remove('hidden');
+            setTimeout(() => {
+                toast.classList.add('hidden');
+            }, 2500);
+        }
+    </script>
+</body>
+</html>
